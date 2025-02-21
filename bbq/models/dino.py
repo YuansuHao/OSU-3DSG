@@ -1,3 +1,4 @@
+import os
 import math
 import types
 
@@ -16,6 +17,7 @@ class DINOFeaturesExtractor:
     def __init__(self, model, load_size, stride, facet, num_patches_h, num_patches_w, **kwargs):
         self.model_type = model
         self.model = DINOFeaturesExtractor.create_model(model)
+        # self.model = DINOFeaturesExtractor.create_model_local("/data/coding/Model/DINOv2/dinov2_vits14_reg4_pretrain.pth")
         self.model = DINOFeaturesExtractor.patch_vit_resolution(self.model, stride=stride, model_type=model)
         self.model.eval()
         self.model.to("cuda" if torch.cuda.is_available() else "cpu")
@@ -50,7 +52,9 @@ class DINOFeaturesExtractor:
                            vit_base_patch16_224]
         :return: the model
         """
+        # torch.hub.set_dir('/data/coding/BBQ')
         if 'dinov2' in model_type:
+            #model = torch.hub.load('facebookresearch_dinov2_main', 'dinov2_vits14', source='local')
             model = torch.hub.load('facebookresearch/dinov2', model_type)
         elif 'dino' in model_type:
             model = torch.hub.load('facebookresearch/dino:main', model_type)
@@ -67,6 +71,15 @@ class DINOFeaturesExtractor:
             del temp_state_dict['head.weight']
             del temp_state_dict['head.bias']
             model.load_state_dict(temp_state_dict)
+        return model
+    
+    @staticmethod
+    def create_model_local(model_path: str):
+        """
+        :param model_path: the local directory path containing the model file.
+        :return: the model
+        """
+        model = torch.load(model_path)
         return model
 
     @staticmethod
@@ -283,7 +296,21 @@ class DINOFeaturesExtractor:
         return desc #torch.nn.functional.interpolate(desc, self.size_orig, mode="nearest")[0] # [H, W, D]
     
     def __call__(self, image):
-        prep_image = self.preprocess(image, self.load_size).to("cuda" if torch.cuda.is_available() else "cpu") # Bx1xtxd
-        features = self.forward(prep_image, include_cls=True, facet=self.facet) # Bx1xtx(dxh)
-        return features[0, 0, 1:, :].reshape([self.num_patches_h, self.num_patches_w, -1]).cpu()
+        prep_image = self.preprocess(image, self.load_size).to("cuda" if torch.cuda.is_available() else "cpu")  # 预处理图像
+        features = self.forward(prep_image, include_cls=True, facet=self.facet)  # 获取特征
+
+        # 动态计算 num_patches_h 和 num_patches_w
+        total_elements = features[0, 0, 1:, :].numel()  # 计算特征张量的总元素数
+        num_patches_h = self.num_patches[0]
+        num_patches_w = self.num_patches[1]
+
+        # 检查能否整除并计算第三个维度
+        if total_elements % (num_patches_h * num_patches_w) == 0:
+            depth = total_elements // (num_patches_h * num_patches_w)
+            reshaped_features = features[0, 0, 1:, :].reshape([num_patches_h, num_patches_w, depth]).cpu()
+        else:
+            raise ValueError(f"Cannot reshape features of size {total_elements} to target shape [{num_patches_h}, {num_patches_w}, -1].")
+
+        return reshaped_features
+
 

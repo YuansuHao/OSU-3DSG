@@ -26,7 +26,7 @@ def as_intrinsics_matrix(intrinsics):
 class GradSLAMDataset(torch.utils.data.Dataset):
     def __init__(
         self,
-        stride: Optional[int] = 1,
+        stride: Optional[int] = 1,      ###### 采样步数
         start: Optional[int] = 0,
         end: Optional[int] = -1,
         desired_height: int = 480,
@@ -43,12 +43,14 @@ class GradSLAMDataset(torch.utils.data.Dataset):
         self.device = device
         self.png_depth_scale = kwargs["camera_params"]["png_depth_scale"]
 
+        ####### 相机参数
         self.orig_height = kwargs["camera_params"]["image_height"]
         self.orig_width = kwargs["camera_params"]["image_width"]
         self.fx = kwargs["camera_params"]["fx"]
         self.fy = kwargs["camera_params"]["fy"]
         self.cx = kwargs["camera_params"]["cx"]
         self.cy = kwargs["camera_params"]["cy"]
+        ######################
 
         self.dtype = dtype
 
@@ -217,6 +219,8 @@ class GradSLAMDataset(torch.utils.data.Dataset):
             depth = np.asarray(imageio.imread(depth_path), dtype=np.int64)
         elif ".npy" in depth_path:
             depth = np.load(depth_path)
+        elif ".pgm" in depth_path:
+            depth = np.asarray(imageio.imread(depth_path), dtype=np.float32)
         else:
             raise NotImplementedError
 
@@ -317,11 +321,56 @@ class ScannetDataset(GradSLAMDataset):
             _pose = torch.from_numpy(np.loadtxt(posefile))
             poses.append(_pose)
         return poses
+    
+class ThreeRScanDataset(GradSLAMDataset):
+    def __init__(
+        self,
+        stride: Optional[int] = None,
+        start: Optional[int] = 0,
+        end: Optional[int] = -1,
+        desired_height: Optional[int] = 540,
+        desired_width: Optional[int] = 960,
+        **kwargs,
+    ):
+        self.input_folder = os.path.join(kwargs["base_dir"], kwargs["sequence"])
+        self.pose_path = os.path.join(self.input_folder, "frame-*.pose.txt")
+        super().__init__(
+            stride=stride,
+            start=start,
+            end=end,
+            desired_height=desired_height,
+            desired_width=desired_width,
+            **kwargs,
+        )
+
+    def get_filepaths(self):
+        color_paths = natsorted(glob.glob(f"{self.input_folder}/*color.jpg"))
+        depth_paths = natsorted(glob.glob(f"{self.input_folder}/*depth.pgm"))
+
+        if len(color_paths) == 0 or len(depth_paths) == 0:
+            raise ValueError(f"No color or depth images found in {self.input_folder}.")
+        
+        return color_paths, depth_paths
+
+    def load_poses(self):
+        pose_files = natsorted(glob.glob(self.pose_path))
+        poses = []
+
+        for pose_file in pose_files:
+            with open(pose_file, "r") as f:
+                pose_matrix = [list(map(float, line.strip().split())) for line in f.readlines()]
+                pose_matrix = np.array(pose_matrix).reshape(4, 4)
+                pose_tensor = torch.from_numpy(pose_matrix).float()
+                poses.append(pose_tensor)
+
+        return poses
 
 def get_dataset(config):
     if config["name"] == "Replica":
         return ReplicaDataset(**config)
     elif config["name"] == "ScanNet":
         return ScannetDataset(**config)
+    elif config["name"] == "3RScan":
+        return ThreeRScanDataset(**config)
     else:
         return NotImplementedError

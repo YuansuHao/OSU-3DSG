@@ -8,10 +8,18 @@ from sklearn.metrics import pairwise_distances_argmin_min
 
 
 def create_object_masks(objects, poses, cam_K, num_views, top_k, image_shape):
-    scene = o3d.t.geometry.RaycastingScene()
-    mesh = {}
-    cam_K = cam_K.cpu().numpy()[:3, :3]
+    '''
+    为每个物体选择最佳视角:
+    · KMeans选择可能的最佳视角num_views个
+    · 对num_views个最佳视角，生成射线，并计算物体掩码
+    · 选择投影面积最大的视角
+    '''
+    # 使用 Open3D 的 RaycastingScene 构建一个射线投影场景，这个场景将用于从相机视角中“投射”射线，计算物体的可见性和遮罩。
+    scene = o3d.t.geometry.RaycastingScene() 
+    mesh = {} # 用于存储每个物体对应的三角网格（mesh）
+    cam_K = cam_K.cpu().numpy()[:3, :3] # 相机内参矩阵转换为 NumPy 数组，并取前 3x3 的部分。
 
+    # 将 3D 点云转换为三角网格并添加到 Raycasting 场景
     for i, object_ in enumerate(tqdm(objects)):
         mesh[i] = o3d.geometry.TriangleMesh.create_from_point_cloud_alpha_shape(object_['pcd'], 0.1)
         mesh[i] = o3d.t.geometry.TriangleMesh.from_legacy(mesh[i])

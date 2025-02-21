@@ -39,29 +39,37 @@ def denoise_objects(objects: MapObjectList, downsample_voxel_size, dbscan_remove
     return objects
 
 def postprocessing(objects, config):
+    '''
+    对累积的 3D 物体列表进行后处理
+    · 过滤：去除点云数据不足、检测次数太少的物体
+    · 去噪：使用 DBSCAN 算法去除噪声点云
+    · object合并：基于物体的空间位置和视觉相似度，合并重复检测的物体
+    · 空间合并：进一步基于物体之间的空间重叠进行优化，精简物体列表
+    · 高度过滤：最后移除位于较高位置的天花板物体
+    '''
     logger.info(f"Before postprocessing: {len(objects)} objects")
 
-    logger.debug("Start filtering")
-    logger.debug(f"Before: {len(objects)}")
+    # 基本过滤
+    logger.debug("Start filtering") 
     objects_to_keep = []
     for obj in objects:
         if len(obj['pcd'].points) >= config["postprocessing"]["obj_min_points"] and \
-            obj['num_detections'] >= config["postprocessing"]["obj_min_detections"]:
-                objects_to_keep.append(obj)
+           obj['num_detections'] >= config["postprocessing"]["obj_min_detections"]:
+            objects_to_keep.append(obj)
     objects = MapObjectList(objects_to_keep)
-    logger.debug(f"After: {len(objects)}")
+    logger.debug(f"After basic filtering: {len(objects)}")
 
+    # 去噪处理
     logger.debug("Start denoising")
-    logger.debug(f"Before: {len(objects)}")
     objects = denoise_objects(objects,
         config["detections_assembler"]["downsample_voxel_size"],
         True,
         config["detections_assembler"]["dbscan_eps"],
         config["detections_assembler"]["dbscan_min_points"])
-    logger.debug(f"After: {len(objects)}")
+    logger.debug(f"After denoising: {len(objects)}")
 
+    # 物体合并
     logger.debug("Start merging")
-    logger.debug(f"Before: {len(objects)}")
     _objects_count = 0
     while (_objects_count != len(objects)):
         if _objects_count != 0:
@@ -71,17 +79,28 @@ def postprocessing(objects, config):
             config["objects_associator"]["merge_objects_overlap_thresh"],
             config["objects_associator"]["merge_objects_visual_sim_thresh"],
             config["detections_assembler"]["downsample_voxel_size"])
-    logger.debug(f"After: {len(objects)}")
+    logger.debug(f"After merging: {len(objects)}")
 
+    # 空间合并
     logger.debug("Start spatial merging postprocess")
     overlap_matrix = compute_overlap_matrix(objects,
         config["detections_assembler"]["downsample_voxel_size"])
     matrix_bool = overlap_matrix > 0.3
     matrix_bool = matrix_bool * matrix_bool.T
-    logger.debug(f"Before: {len(objects)}")
     objects = merge_objects_postprocessing(objects, matrix_bool,
         config["detections_assembler"]["downsample_voxel_size"])
-    logger.debug(f"After: {len(objects)}")
+    logger.debug(f"After spatial merging: {len(objects)}")
 
+    # # 最终高度过滤（移除天花板）
+    # logger.debug("Final height filtering for ceiling objects")
+    # objects_to_keep = []
+    # for obj in objects:
+    #     if obj['bbox'].center[2] <= 1.2:  # 筛选高度不超过1.2的对象
+    #         objects_to_keep.append(obj)
+    #     else:
+    #         logger.info(f'Removed object with bbox center height: {obj["bbox"].center[2]}')
+
+    # objects = MapObjectList(objects_to_keep)
     logger.info(f"After postprocessing: {len(objects)} objects")
+
     return objects

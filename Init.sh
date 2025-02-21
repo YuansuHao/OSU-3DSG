@@ -1,0 +1,1 @@
+conda activate osu3d; export PYTHONPATH=./

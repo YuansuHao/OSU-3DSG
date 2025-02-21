@@ -1,3 +1,4 @@
+import os
 import requests
 from io import BytesIO
 
@@ -26,13 +27,33 @@ class LLaVaChat:
     DEFAULT_IM_END_TOKEN = "<im_end>"
     IMAGE_PLACEHOLDER = "<image-placeholder>"
 
-    def __init__(self, model_path="liuhaotian/llava-v1.6-vicuna-7b"):
+    def __init__(self, model_path="liuhaotian/llava-v1.6-vicuna-7b"): # , local_model_dir="/data/coding/llava-v1.6-vicuna-7b"
         disable_torch_init()
+
+        # # 检查本地模型文件是否存在
+        # if os.path.exists(local_model_dir) and os.path.isdir(local_model_dir):
+        #     print(f"Loading local model from {local_model_dir}")
+        #     self.model_name = get_model_name_from_path(local_model_dir)  
+        #     self.tokenizer, self.model, self.image_processor, self.context_len = load_pretrained_model(
+        #         local_model_dir, None, self.model_name, device="cuda")
+        # else:
+        #     print(f"Local model not found. Downloading from Huggingface: {model_path}")
+        #     self.model_name = get_model_name_from_path(model_path)  
+        #     self.tokenizer, self.model, self.image_processor, self.context_len = load_pretrained_model(
+        #         model_path, None, self.model_name, device="cuda")
 
         self.model_name = get_model_name_from_path(model_path)  
         self.tokenizer, self.model, self.image_processor, self.context_len = load_pretrained_model(
         model_path, None, self.model_name, device="cuda")
 
+        # 添加调试信息，查看模型是否加载成功
+        print("Model loaded successfully!")
+        # print(f"Model: {self.model}")  # 查看模型结构，检查是否包含meta tensor
+
+        # 确认设备是否正确
+        print(f"Model is on device: {self.model.device}")  # 检查模型的设备是cuda还是cpu
+
+        # 后面的对话模式配置
         if "llama-2" in self.model_name.lower():
             self.conv_mode = "llava_llama_2"
         elif "mistral" in self.model_name.lower():

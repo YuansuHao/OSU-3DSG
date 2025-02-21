@@ -29,24 +29,28 @@ class NodesConstructor:
     def integrate(self, step_idx, frame, save_path=False):
         color, depth, intrinsics, pose = frame
         # generate class-agnostic masks
-        masks_result = self.mask_generator(color)
+        masks_result = self.mask_generator(color)    ### 生成mask
+        if masks_result is None:
+            return None
         # generate DINO features
-        descriptors = self.features_generator(color)
-        # aggregate information about detected objects
-        detected_objects = self.detections_assembler(
+        descriptors = self.features_generator(color)                 #### 提取图片的DINO特征
+        # aggregate information about detected objects  
+        detected_objects = self.detections_assembler(                  #### 得到检测对象    pcd  bbox   descriptor    id
             step_idx, color, depth, intrinsics, pose, masks_result, descriptors)
         
-        if len(detected_objects) == 0 and len(self.objects) != 0:
+        if len(detected_objects) == 0 and len(self.objects) != 0:      
             logger.debug("no detected objects")
             return
         if len(self.objects) == 0:
-            # add all detections to the map
+            # add all detections to the map 初始化object map
             for i in range(len(detected_objects)):
                 self.objects.append(detected_objects[i])
             logger.debug(f"Initialize {len(detected_objects)} detections as objects")
 
-        # objects accumulation
+        # objects accumulation 将当前帧的检测结果与现有的物体地图进行匹配与更新
         self.objects = self.objects_mapper(detected_objects, self.objects)
+        
+        # 每隔N帧对场景内积累的物体进行合并
         if step_idx > 0 and step_idx % self.config["objects_associator"]["merge_interval"] == 0:
             self.objects = merge_objects(self.objects,
                 self.config["objects_associator"]["merge_objects_overlap_thresh"],

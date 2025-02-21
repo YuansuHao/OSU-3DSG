@@ -41,6 +41,10 @@ class MobileSAMGenerator:
             conf=0.4,
             iou=0.9)
         self.predictor.set_image(image)
+
+        if obj_results is None:
+            return None,None,None
+
         input_boxes1 = obj_results[0].boxes.xyxy
         input_boxes = input_boxes1.cpu().numpy()
         input_boxes = self.predictor.transform.apply_boxes(input_boxes,

@@ -94,7 +94,7 @@ def compute_overlap_matrix(objects, downsample_voxel_size):
     that are within a distance threshold of any point in point cloud j. 
     '''
     n = len(objects)
-    overlap_matrix = np.zeros((n, n))
+    overlap_matrix = np.zeros((n, n)) # 初始化重叠矩阵
     
     # Convert the point clouds into numpy arrays and then into FAISS indices for efficient search
     res = faiss.StandardGpuResources()
@@ -113,7 +113,7 @@ def compute_overlap_matrix(objects, downsample_voxel_size):
                 box_i = objects[i]['bbox']
                 box_j = objects[j]['bbox']
                 
-                # Skip if the boxes do not overlap at all (saves computation)
+                # Skip if the boxes do not overlap at all (saves computation) 
                 iou = compute_3d_iou(box_i, box_j)
                 if iou == 0:
                     continue
@@ -122,16 +122,17 @@ def compute_overlap_matrix(objects, downsample_voxel_size):
                 # _, I = indices[j].range_search(point_arrays[i], threshold ** 2)
                 D, I = indices[j].search(point_arrays[i], 1)
 
-                # # If any points are found within the threshold, increase overlap count
+                # # If any points are found within the threshold, increase overlap count 对于找到的最近邻点，检查它们与查询点之间的距离是否小于给定的阈值
                 # overlap += sum([len(i) for i in I])
                 overlap = (D < downsample_voxel_size ** 2).sum() # D is the squared distance
 
-                # Calculate the ratio of points within the threshold
+                # Calculate the ratio of points within the threshold 重叠点数/总点数 = 重叠比例
                 overlap_matrix[i, j] = overlap / len(point_arrays[i])
 
     return overlap_matrix
 
 def compute_3d_iou(bbox1, bbox2, padding=0, use_iou=True):
+    # 计算边界框重叠IoU
     # Get the coordinates of the first bounding box
     bbox1_min = np.asarray(bbox1.get_min_bound()) - padding
     bbox1_max = np.asarray(bbox1.get_max_bound()) + padding
@@ -180,6 +181,9 @@ def merge_overlap_objects(objects, overlap_matrix,
         if ratio > merge_overlap_thresh:
             if visual_sim > merge_visual_sim_thresh:
                 if kept_objects[j]:
+                    # 如果两个物体的空间重叠比例超过 merge_overlap_thresh
+                    # 并且它们的视觉相似度超过 merge_visual_sim_thresh，
+                    # 则认为这两个物体足够相似，应该被合并。
                     objects[j] = merge_obj2_into_obj1(objects[j], objects[i],
                         downsample_voxel_size, run_dbscan=False, are_objects=True)
                     kept_objects[i] = False
@@ -235,8 +239,8 @@ def merge_objects(objects, merge_overlap_thresh, merge_visual_sim_thresh, downsa
         # Merge one object into another if the former is contained in the latter
         logger.debug("Start merging")
         logger.debug(f"Before merging: {len(objects)}")
-        overlap_matrix = compute_overlap_matrix(objects, downsample_voxel_size)
-        objects = merge_overlap_objects(objects, overlap_matrix,
+        overlap_matrix = compute_overlap_matrix(objects, downsample_voxel_size) # 计算重叠矩阵
+        objects = merge_overlap_objects(objects, overlap_matrix, # 合并重叠物体
             merge_overlap_thresh, merge_visual_sim_thresh, downsample_voxel_size)
         logger.debug(f"After merging: {len(objects)}")
 

@@ -18,8 +18,10 @@ class ClassAgnosticMaskGenerator:
     def __call__(self, image):
         image = image.cpu().to(torch.uint8).numpy()
         xyxy, mask, conf = self.model(image)
+        if xyxy is None:
+            return None
         xyxy, mask, conf = xyxy.cpu().numpy(), mask.cpu().bool().numpy(), conf.cpu().numpy().flatten()
-        detections = sv.Detections(
+        detections = sv.Detections(                        ###  就是封装一下
             xyxy=xyxy,
             confidence=conf,
             class_id=np.zeros_like(conf).astype(int),

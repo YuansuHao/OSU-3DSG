@@ -22,23 +22,18 @@ def main(args):
         meta_info = pickle.load(file)
     config = meta_info["config"]
 
-    vis = o3d.visualization.VisualizerWithKeyCallback()
-    vis.create_window(
-        window_name = "Mapping",
-        width = config["dataset"]["desired_width"],
-        height = config["dataset"]["desired_height"],
-        visible=True
+    # Create an offscreen renderer
+    renderer = o3d.visualization.rendering.OffscreenRenderer(
+        width=config["dataset"]["desired_width"],
+        height=config["dataset"]["desired_height"]
     )
-    view_ctrl = vis.get_view_control()
-    view_ctrl.change_field_of_view(10)
-    camera_param = view_ctrl.convert_to_pinhole_camera_parameters()
 
     result_frames = []
     rgbd_dataset = get_dataset(config["dataset"])
     for step_idx, frame in enumerate(rgbd_dataset):
         color, _, _, pose = frame
 
-        # load the mapping results up to this frame
+        # Load the mapping results up to this frame
         with gzip.open(os.path.join(
             args.animation_folder, f"frame_{step_idx}_objects.pkl.gz"), "rb") as file:
                 frame_objects = pickle.load(file)
@@ -46,26 +41,33 @@ def main(args):
         frame_objects_list = MapObjectList()
         frame_objects_list.load_serializable(frame_objects["objects"])
 
-        # first render the objects in RGB color
-        if step_idx > 0:
-            vis.clear_geometries()
+        # Add geometries to the renderer
+        renderer.scene.clear_geometry()
         pcds = frame_objects_list.get_values("pcd")
         bboxes = frame_objects_list.get_values("bbox")
-        for geom in pcds + bboxes:
-            vis.add_geometry(geom)
-        camera_param.extrinsic = np.linalg.inv(to_numpy(pose))
-        view_ctrl.convert_from_pinhole_camera_parameters(camera_param)
-        view_ctrl.camera_local_translate(forward=-0.4, right=0.0, up=0.0)
-        vis.poll_events()
-        vis.update_renderer()
-        render_rgb = vis.capture_screen_float_buffer(True)
-        render_rgb = np.asarray(render_rgb)
+        for i, geom in enumerate(pcds + bboxes):
+            renderer.scene.add_geometry(f"geom_{i}", geom, o3d.visualization.rendering.MaterialRecord())
 
-        # save frames
-        image_stack = np.concatenate([color, (render_rgb * 255).astype(np.uint8)], axis=1)
-        result_frames.append(image_stack)
+        # Set camera pose
+        center = [0, 0, 0]
+        # eye = [pose[0, 3], pose[1, 3], pose[2, 3]]
+        # up = [0, 1, 0]
+        eye = [0, 0, 15] 
+        up = [0, 0, 1] 
+        renderer.scene.camera.look_at(center, eye, up)
 
-    vis.destroy_window()
+        # Render the current frame
+        render_rgb = np.asarray(renderer.render_to_image())
+
+        # Save frames
+        # image_stack = np.concatenate([color, render_rgb], axis=1)
+        # result_frames.append(image_stack)
+
+        result_frames.append(render_rgb)
+
+
+    # Save the resulting video
+    os.makedirs(os.path.dirname(args.video_save_path), exist_ok=True)
     imageio.mimwrite(args.video_save_path, result_frames, fps=float(args.fps))
 
 if __name__ == "__main__":
