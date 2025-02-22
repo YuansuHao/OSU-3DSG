@@ -52,7 +52,7 @@ class DINOFeaturesExtractor:
                            vit_base_patch16_224]
         :return: the model
         """
-        # torch.hub.set_dir('/data/coding/BBQ')
+        # torch.hub.set_dir('/data/coding/osu3d')
         if 'dinov2' in model_type:
             #model = torch.hub.load('facebookresearch_dinov2_main', 'dinov2_vits14', source='local')
             model = torch.hub.load('facebookresearch/dinov2', model_type)

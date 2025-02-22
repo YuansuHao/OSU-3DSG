@@ -2,8 +2,8 @@ import torch
 import numpy as np
 import supervision as sv
 
-from bbq.models.masks.sam import SAMGenerator
-from bbq.models.masks.mobile_sam import MobileSAMGenerator
+from osu3d.models.masks.sam import SAMGenerator
+from osu3d.models.masks.mobile_sam import MobileSAMGenerator
 
 
 class ClassAgnosticMaskGenerator:

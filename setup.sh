@@ -61,6 +61,10 @@ cd dinov2
 wget https://dl.fbaipublicfiles.com/dinov2/dinov2_vits14/dinov2_vits14_reg4_pretrain.pth
 wget https://dl.fbaipublicfiles.com/dinov2/dinov2_vits14/dinov2_vits14_reg4_linear_head.pth
 
+gdown 1dE-YAG-1mFCBmao2rHDp0n-PP4eH7SjE -O ~/weights/mobilesamv2/weight.zip
+unzip ~/weights/mobilesamv2/weight.zip -d ~/weights/mobilesamv2/
+cp ~/MobileSAM/MobileSAMv2/PromptGuidedDecoder/Prompt_guided_Mask_Decoder.pt ~/weights/mobilesamv2/weight/
+
 echo "export PYTHONPATH=/data/coding/MobileSAM/MobileSAMv2:\$PYTHONPATH" >> ~/.bashrc
 echo "export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python" >> ~/.bashrc
 echo "export HF_HUB_OFFLINE=1" >> ~/.bashrc

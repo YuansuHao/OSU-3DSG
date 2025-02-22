@@ -1,6 +1,6 @@
-from bbq.models.llava import LLaVaChat
-from bbq.models.dino import DINOFeaturesExtractor
-from bbq.models.masks.masks_generator import ClassAgnosticMaskGenerator
+from osu3d.models.llava import LLaVaChat
+from osu3d.models.dino import DINOFeaturesExtractor
+from osu3d.models.masks.masks_generator import ClassAgnosticMaskGenerator
 
 
 __all__ = [

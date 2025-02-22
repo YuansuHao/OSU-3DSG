@@ -10,7 +10,7 @@ sample/*
 
 # compiled files #
 *.pyc
-bbq.egg-info
+osu3d.egg-info
 */__pycache__/*
 
 # Packages #

@@ -5,7 +5,7 @@ import torch
 import numpy as np
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
-from bbq.grounding.utils import get_semantic_edge
+from osu3d.grounding.utils import get_semantic_edge
 
 
 class Llama3:

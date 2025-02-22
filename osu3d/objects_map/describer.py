@@ -4,7 +4,7 @@ import open3d as o3d
 from PIL import Image
 from tqdm import tqdm
 from loguru import logger
-from bbq.models import LLaVaChat
+from osu3d.models import LLaVaChat
 
 def get_xyxy_from_mask(mask):
     non_zero_indices = np.nonzero(mask)

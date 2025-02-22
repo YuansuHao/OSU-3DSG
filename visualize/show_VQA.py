@@ -4,22 +4,22 @@ import json
 import numpy as np
 import open3d as o3d
 import open3d.visualization.rendering as rendering
-from bbq.objects_map.utils import MapObjectList
+from osu3d.objects_map.utils import MapObjectList
 # xvfb-run -s "-screen 0 1280x720x24" python3 visualize/show_VQA.py
 
 def main():
     # office0场景
-    objects_path = "/data/coding/BBQ/output/scenes/replica_room0_objects.pkl.gz"
-    json_path = "/data/coding/BBQ/output/scenes/replica_room0.json"
+    objects_path = "/data/coding/osu3d/output/scenes/replica_room0_objects.pkl.gz"
+    json_path = "/data/coding/osu3d/output/scenes/replica_room0.json"
     # query_answer_path = "/data/coding/VQA/3DSG_result/task3/room0/output/Find the furthest chair from the door.json"
     query_answer_path = "/data/coding/VQA/3DSG_result/output/Replica/room0/Find the furthest armchair from the door.json"
-    output_image_path = "/data/coding/BBQ/output/query_picture/Replica/Find the furthest armchair from the door.png"
+    output_image_path = "/data/coding/osu3d/output/query_picture/Replica/Find the furthest armchair from the door.png"
     
     # 19eda6f4-55aa-29a0-8893-8eac3a4d8193场景
-    # objects_path = "/data/coding/BBQ/output/scenes/3rscan_19eda6f4-55aa-29a0-8893-8eac3a4d8193.pkl.gz"
-    # json_path = "/data/coding/BBQ/output/scenes/3rscan_19eda6f4-55aa-29a0-8893-8eac3a4d8193.json"
-    # query_answer_path = "/data/coding/BBQ/output/query_answer/3RScan/19eda6f4-55aa-29a0-8893-8eac3a4d8193/Is there any chair in the scene.json"
-    # output_image_path = "/data/coding/BBQ/output/query_picture/3RScan/19ed-chair.png"
+    # objects_path = "/data/coding/osu3d/output/scenes/3rscan_19eda6f4-55aa-29a0-8893-8eac3a4d8193.pkl.gz"
+    # json_path = "/data/coding/osu3d/output/scenes/3rscan_19eda6f4-55aa-29a0-8893-8eac3a4d8193.json"
+    # query_answer_path = "/data/coding/osu3d/output/query_answer/3RScan/19eda6f4-55aa-29a0-8893-8eac3a4d8193/Is there any chair in the scene.json"
+    # output_image_path = "/data/coding/osu3d/output/query_picture/3RScan/19ed-chair.png"
 
     # 加载 .pkl.gz 文件中的对象数据
     with gzip.open(objects_path, "rb") as f:

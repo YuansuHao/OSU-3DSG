@@ -1,8 +1,8 @@
 import numpy as np
 from loguru import logger
 
-from bbq.objects_map.utils.structures import MapObjectList
-from bbq.objects_map.utils.objects import merge_obj2_into_obj1, \
+from osu3d.objects_map.utils.structures import MapObjectList
+from osu3d.objects_map.utils.objects import merge_obj2_into_obj1, \
     process_pcd, get_bounding_box, merge_objects, compute_overlap_matrix
 
 

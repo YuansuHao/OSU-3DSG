@@ -6,10 +6,10 @@ import torch
 torch.set_grad_enabled(False)
 from loguru import logger
 
-from bbq.objects_map import ObjectsAssociator, DetectionsAssembler, \
+from osu3d.objects_map import ObjectsAssociator, DetectionsAssembler, \
     create_object_masks, describe_objects
-from bbq.objects_map.utils import MapObjectList, merge_objects, postprocessing
-from bbq.models import DINOFeaturesExtractor, ClassAgnosticMaskGenerator
+from osu3d.objects_map.utils import MapObjectList, merge_objects, postprocessing
+from osu3d.models import DINOFeaturesExtractor, ClassAgnosticMaskGenerator
 
 
 class NodesConstructor:

@@ -19,13 +19,33 @@
 
   <!-- <h4 align="center"><a href="https://linukc.github.io/BeyondBareQueries/">Project</a> | <a href="http://arxiv.org/abs/2406.07113">arXiv</a> | <a href="https://github.com/linukc/BeyondBareQueries">Code</a></h4>
   <div align="center"></div> -->
+
+## News
+- [25.2.22] Release the initial version of **OSU-3DSG**. 
+<p align="center">
+<img src="assets/framework.png" width="100%">
 </p>
+
+## Introduction
+
+- **OSU-3DSG** is an open-scene 3D scene graph framework designed for open-world environments. Our model incorporates two key innovations:
+  - (1) an open-scene 3D object detector that identifies objects from RGB-D frames without relying on fixed object classes or labeled datasets
+  - (2) an open-vocabulary 3D scene graph generation method that uses a pre-trained vision-language model to generate relationship predicates, allowing for flexible scene understanding. 
 
 <p align="center">
-<img src="assets/framework.png" width="80%">
+<img src="assets/table1.jpg" width="50%">
 </p>
 
-## Getting Started
+## Example Outputs
+- **Open Scene Understanding cases based on OSU-3DSG on Replica**
+
+<p float="center">
+    <img src="assets/case1.jpg" style="width: 50%; margin: auto;">
+</p>
+
+
+
+## Usage
 
 ### System Requirements
 - **Recommended GPUs**: 1xR8000 (48G) to run local vLLM
@@ -67,47 +87,7 @@ source Init.sh # This will set PYTHONPATH and activate the environment for you.
 ```
 ### Prerequisites
 
-Before running OSU-3DSG, make sure you have obtained the following checkpoints:
-
-#### MobileSAMv2
-```bash 
-gdown 1dE-YAG-1mFCBmao2rHDp0n-PP4eH7SjE -O ~/weights/mobilesamv2/weight.zip
-unzip ~/weights/mobilesamv2/weight.zip -d ~/weights/mobilesamv2/
-cp ~/MobileSAM/MobileSAMv2/PromptGuidedDecoder/Prompt_guided_Mask_Decoder.pt ~/weights/mobilesamv2/weight/
-```
-Or download manually:
-- Download weight.zip from [Google Drive](https://drive.usercontent.google.com/download?id=1dE-YAG-1mFCBmao2rHDp0n-PP4eH7SjE&export=download&authuser=0).
-- Extract the file and copy *Prompt_guided_Mask_Decoder.pt* to the weight folder.
-
-#### VLM Model
-Use `git-lfs` to download weights of [LLaVA-Vicuna-7B Model](https://huggingface.co/liuhaotian/llava-v1.6-vicuna-7b/tree/main) and [Qwen2.5-VL-72B-Instruct Model](https://huggingface.co/Qwen/Qwen2.5-VL-72B-Instruct/tree/main)::
-```bash
-git lfs install
-git clone https://huggingface.co/liuhaotian/llava-v1.6-vicuna-7b
-git clone https://huggingface.co/Qwen/Qwen2.5-VL-72B-Instruct
-```
-#### CLIP Model
-Use `git-lfs` to download weights of [clip-vit-large-patch14-336](https://huggingface.co/openai/clip-vit-large-patch14-336/tree/main):
-```bash
-git lfs install
-git clone https://huggingface.co/openai/clip-vit-large-patch14-336
-```
-
-The file structure looks like:
-```
-ckpt/
-|–– llava-v1.6-vicuna-7b/
-    |-- ...
-|–– Qwen2.5-VL-72B-Instruct/
-    |-- ...
-|–– clip-vit-large-patch14-336/
-    |-- dinov2_vits14_reg4_pretrain.pth
-    |-- dinov2_vits14_reg4_linear_head.pth
-|–– MobileSAMv2/
-    |-- Prompt_guided_Mask_Decoder.pt
-```
-
-
+Before running OSU-3DSG, make sure you have obtained the checkpoints in [Prerequisites.md](./files/Prerequisites.md)
 
 ### Run OSU-3DSG
 
@@ -116,8 +96,8 @@ ckpt/
 First, build 3D Object Map. Check config before run. Inside container call script:
 
 ```python
-python3 main.py --config_path=examples/configs/replica/room0.yaml #Replica
-python3 main.py --config_path=examples/configs/3rscan/scene1.yaml #3RScan
+python3 objectmap.py --config_path=examples/configs/replica/room0.yaml #Replica
+python3 objectmap.py --config_path=examples/configs/3rscan/scene1.yaml #3RScan
 ```
 
 To visualize 3D object map:
@@ -133,13 +113,12 @@ Setup [Qwen2.5-VL-72B-Instruct Model](https://huggingface.co/Qwen/Qwen2.5-VL-72B
 
 ```python
 # Qwen2.5-VL
-python3 Triplet_Construction.py --config_path=examples/configs/replica/room0.json --save_path=output/scenes #Replica
-python3 Triplet_Construction.py --config_path=examples/configs/3rscan/scene1.json --save_path=output/scenes #3RScan 
+python3 scenegraph.py --config_path=examples/configs/replica/room0.json --save_path=output/scenes #Replica
+python3 scenegraph.py --config_path=examples/configs/3rscan/scene1.json --save_path=output/scenes #3RScan 
 ```
 
 ## Acknowledgement
-We base our work on the following paper codebase: [BeyondBareQueries](https://github.com/linukc/BeyondBareQueries).
-
+This work is built upon the [BBQ](https://github.com/linukc/BeyondBareQueries), [LLaVA](https://github.com/haotian-liu/LLaVA), [Qwen](https://github.com/QwenLM/Qwen2.5), [CLIP](https://github.com/openai/CLIP).
 <!-- ## Citation
 If you find this work helpful, please consider citing our work as:
 ```

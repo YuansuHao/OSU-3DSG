@@ -8,7 +8,7 @@ from loguru import logger
 import torch.nn.functional as F
 from cuml import DBSCAN as cumlDBSCAN
 
-from bbq.objects_map.utils.structures import MapObjectList
+from osu3d.objects_map.utils.structures import MapObjectList
 
 
 def to_tensor(numpy_array, device=None):

@@ -5,8 +5,8 @@ import open3d as o3d
 from loguru import logger
 import torch.nn.functional as F
 
-from bbq.objects_map.utils import DetectionList
-from bbq.objects_map.utils import process_pcd, get_bounding_box
+from osu3d.objects_map.utils import DetectionList
+from osu3d.objects_map.utils import process_pcd, get_bounding_box
 
 
 def from_intrinsics_matrix(K):

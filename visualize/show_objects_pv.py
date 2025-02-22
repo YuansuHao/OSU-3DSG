@@ -4,18 +4,18 @@ import json
 import numpy as np
 import pyvista as pv
 
-from bbq.objects_map.utils import MapObjectList
+from osu3d.objects_map.utils import MapObjectList
 #print(o3d.__DEVICE_API__)
 # xvfb-run -s "-screen 0 1280x720x24" python3 visualize/show_objects.py
 
 def main():
     # 写死文件路径
-    #objects_path = "/data/coding/BBQ/office_data/output/12.05.2024_00:58:17_office.pkl.gz"
-    #json_path = "/data/coding/BBQ/office_data/output/12.05.2024_00:58:17_office.json"
-    #output_image_path = "/data/coding/BBQ/office_data/output/object_map/office.png"
-    objects_path = "/data/coding/BBQ/output/scenes/12.18.2024_17:02:52_replica_room2_objects.pkl.gz"
-    json_path = "/data/coding/BBQ/output/scenes/12.18.2024_17:02:52_replica_room2.json"
-    output_image_path = "/data/coding/BBQ/output/object_map/office.png"
+    #objects_path = "/data/coding/osu3d/office_data/output/12.05.2024_00:58:17_office.pkl.gz"
+    #json_path = "/data/coding/osu3d/office_data/output/12.05.2024_00:58:17_office.json"
+    #output_image_path = "/data/coding/osu3d/office_data/output/object_map/office.png"
+    objects_path = "/data/coding/osu3d/output/scenes/12.18.2024_17:02:52_replica_room2_objects.pkl.gz"
+    json_path = "/data/coding/osu3d/output/scenes/12.18.2024_17:02:52_replica_room2.json"
+    output_image_path = "/data/coding/osu3d/output/object_map/office.png"
     #print(1)
     # bbox_
 

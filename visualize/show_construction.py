@@ -7,8 +7,8 @@ import imageio
 import numpy as np
 import open3d as o3d
 
-from bbq.datasets import get_dataset
-from bbq.objects_map.utils import MapObjectList
+from osu3d.datasets import get_dataset
+from osu3d.objects_map.utils import MapObjectList
 
 
 def to_numpy(tensor):

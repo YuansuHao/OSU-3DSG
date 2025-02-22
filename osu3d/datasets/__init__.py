@@ -1,4 +1,4 @@
-from bbq.datasets.datasets import get_dataset
+from osu3d.datasets.datasets import get_dataset
 
 
 __all__ = [

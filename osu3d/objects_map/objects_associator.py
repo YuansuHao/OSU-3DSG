@@ -1,4 +1,4 @@
-from bbq.objects_map.utils import process_pcd, get_bounding_box, \
+from osu3d.objects_map.utils import process_pcd, get_bounding_box, \
     compute_spatial_similarities, compute_visual_similarities, merge_obj2_into_obj1
 
 
