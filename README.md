@@ -40,7 +40,7 @@
 - **Open Scene Understanding cases based on OSU-3DSG on Replica**
 
 <p align="center">
-    <img src="assets/case1.jpg" style="width: 50%">
+    <img src="assets/case1.jpg" style="width: 80%">
 </p>
 
 
