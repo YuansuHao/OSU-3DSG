@@ -39,8 +39,8 @@
 ## Example Outputs
 - **Open Scene Understanding cases based on OSU-3DSG on Replica**
 
-<p float="center">
-    <img src="assets/case1.jpg" style="width: 50%; margin: auto;">
+<p align="center">
+    <img src="assets/case1.jpg" style="width: 50%">
 </p>
 
 
