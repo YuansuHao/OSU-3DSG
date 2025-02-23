@@ -117,8 +117,8 @@ python3 scenegraph.py --config_path=examples/configs/replica/room0.json --save_p
 python3 scenegraph.py --config_path=examples/configs/3rscan/scene1.json --save_path=output/scenes #3RScan 
 ```
 
-## Acknowledgement
-This work is built upon the [BBQ](https://github.com/linukc/BeyondBareQueries), [LLaVA](https://github.com/haotian-liu/LLaVA), [Qwen](https://github.com/QwenLM/Qwen2.5), [CLIP](https://github.com/openai/CLIP).
+<!-- ## Acknowledgement
+This work is built upon the [BBQ](https://github.com/linukc/BeyondBareQueries), [LLaVA](https://github.com/haotian-liu/LLaVA), [Qwen](https://github.com/QwenLM/Qwen2.5), [CLIP](https://github.com/openai/CLIP). -->
 <!-- ## Citation
 If you find this work helpful, please consider citing our work as:
 ```
