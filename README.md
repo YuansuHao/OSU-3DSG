@@ -1,30 +1,20 @@
 <p align="center">
 
-  <h1 align="center">Open-Scene Understanding-oriented 3D Scene Graph Generation</h1>
-  <!-- <p align="center">
-    <a href="https://github.com/linukc">Linok Sergey</a>
-    ·
-    <a href="https://github.com/wingrune">Tatiana Zemskova</a>
-    ·
-    Svetlana Ladanova
-    ·
-    Roman Titkov
-    ·
-    Dmitry Yudin
-    <br>
-    Maxim Monastyrny
-    ·
-    Aleksei Valenkov
-  </p> -->
+  <!-- <h1 align="center">Open-Scene Understanding-oriented 3D Scene Graph Generation</h1>
+  <p align="center">
+    <a href="https://github.com/YuansuHao">Yuansu Hao</a>
+  </p>
 
-  <!-- <h4 align="center"><a href="https://linukc.github.io/BeyondBareQueries/">Project</a> | <a href="http://arxiv.org/abs/2406.07113">arXiv</a> | <a href="https://github.com/linukc/BeyondBareQueries">Code</a></h4>
+  <h4 align="center"><a href="http://arxiv.org/abs/2406.07113">arXiv</a> | <a href="https://github.com/YuansuHao/OSU-3DSG">Code</a></h4>
   <div align="center"></div> -->
 
 ## News
-- [25.2.22] Release the initial version of **OSU-3DSG**. 
+- [2025.03] We are pleased to inform you that our paper has been accepted at ICME 2025! 🎉
+- [2025.02] Release the initial version of **OSU-3DSG**. 
 <p align="center">
 <img src="assets/framework.png" width="100%">
 </p>
+
 
 ## Introduction
 
@@ -117,8 +107,9 @@ python3 scenegraph.py --config_path=examples/configs/replica/room0.json --save_p
 python3 scenegraph.py --config_path=examples/configs/3rscan/scene1.json --save_path=output/scenes #3RScan 
 ```
 
-<!-- ## Acknowledgement
-This work is built upon the [BBQ](https://github.com/linukc/BeyondBareQueries), [LLaVA](https://github.com/haotian-liu/LLaVA), [Qwen](https://github.com/QwenLM/Qwen2.5), [CLIP](https://github.com/openai/CLIP). -->
+## Acknowledgement
+We are grateful for the following awesome projects our OSU-3DSG arising from: [BBQ](https://github.com/linukc/BeyondBareQueries), [LLaVA](https://github.com/haotian-liu/LLaVA), [Qwen](https://github.com/QwenLM/Qwen2.5), [CLIP](https://github.com/openai/CLIP).
+
 <!-- ## Citation
 If you find this work helpful, please consider citing our work as:
 ```
@@ -133,5 +124,5 @@ If you find this work helpful, please consider citing our work as:
 }
 ``` -->
 
-<!-- ## Contact
-Please create an issue on this repository for questions, comments and reporting bugs. Send an email to [Linok Sergey](linok.sa@phystech.edu) for other inquiries. -->
+## Contact
+Please create an issue on this repository for questions, comments and reporting bugs. Send an email to [Yuansu Hao](24s136079@stu.hit.edu.cn) for other inquiries.
