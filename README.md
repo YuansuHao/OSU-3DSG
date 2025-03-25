@@ -1,11 +1,12 @@
 <p align="center">
 
-  <!-- <h1 align="center">Open-Scene Understanding-oriented 3D Scene Graph Generation</h1>
-  <p align="center">
+  <h1 align="center">Open-Scene Understanding-oriented 3D Scene Graph Generation</h1>
+  
+  <!-- <p align="center">
     <a href="https://github.com/YuansuHao">Yuansu Hao</a>
-  </p>
+  </p> -->
 
-  <h4 align="center"><a href="http://arxiv.org/abs/2406.07113">arXiv</a> | <a href="https://github.com/YuansuHao/OSU-3DSG">Code</a></h4>
+  <!-- <h4 align="center"><a href="http://arxiv.org/abs/2406.07113">arXiv</a> | <a href="https://github.com/YuansuHao/OSU-3DSG">Code</a></h4>
   <div align="center"></div> -->
 
 ## News
